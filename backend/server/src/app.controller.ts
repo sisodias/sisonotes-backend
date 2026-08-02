@@ -11,7 +11,7 @@ export class AppController {
   info() {
     return {
       compatibility: env.version,
-      message: `SISO Notes ${env.version} Server`,
+      message: `SisoNotes ${env.version} Server`,
       type: env.DEPLOYMENT_TYPE,
       flavor: env.FLAVOR,
     };

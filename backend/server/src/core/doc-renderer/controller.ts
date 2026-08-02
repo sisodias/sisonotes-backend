@@ -205,8 +205,8 @@ export class DocRendererController {
     }
 
     const title = opts?.title
-      ? htmlSanitize(`${opts.title} | SISO Notes`)
-      : 'SISO Notes';
+      ? htmlSanitize(`${opts.title} | SisoNotes`)
+      : 'SisoNotes';
     const summary = opts ? htmlSanitize(opts.summary) : assets.description;
     const image = opts?.avatar ?? 'https://sisonotes.pro/og.jpeg';
 

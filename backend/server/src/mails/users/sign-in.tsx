@@ -17,9 +17,9 @@ export type SignInProps = {
 export default function SignIn(props: SignInProps) {
   return (
     <Template>
-      <Title>{`Sign in to ${props.serverName ?? 'SISO Notes'}`}</Title>
+      <Title>{`Sign in to ${props.serverName ?? 'SisoNotes'}`}</Title>
       <Content>
-        <P>You are signing in to SISO Notes. Here is your code:</P>
+        <P>You are signing in to SisoNotes. Here is your code:</P>
         <OnelineCodeBlock>{props.otp}</OnelineCodeBlock>
         <P>
           Alternatively, you can sign in directly by clicking the magic link

@@ -78,13 +78,13 @@ export class CryptoHelper implements OnModuleInit {
 
   private previousPublicKeys: KeyObject[] = [];
 
-  SISO NotesProPublicKey: Buffer | null = null;
-  SISO NotesProLicenseAESKey: Buffer | null = null;
+  SisoNotesProPublicKey: Buffer | null = null;
+  SisoNotesProLicenseAESKey: Buffer | null = null;
 
   onModuleInit() {
     if (env.selfhosted) {
-      this.SISO NotesProPublicKey = this.loadSISO NotesProPublicKey();
-      this.SISO NotesProLicenseAESKey = this.loadSISO NotesProLicenseAESKey();
+      this.SisoNotesProPublicKey = this.loadSisoNotesProPublicKey();
+      this.SisoNotesProLicenseAESKey = this.loadSisoNotesProLicenseAESKey();
     }
   }
 
@@ -306,21 +306,21 @@ export class CryptoHelper implements OnModuleInit {
     return createHash('sha256').update(data).digest();
   }
 
-  private loadSISO NotesProPublicKey() {
+  private loadSisoNotesProPublicKey() {
     if (SISO_NOTES_PRO_PUBLIC_KEY) {
       return Buffer.from(SISO_NOTES_PRO_PUBLIC_KEY);
     } else {
       this.logger.warn('SISO_NOTES_PRO_PUBLIC_KEY is not set at compile time.');
     }
 
-    if (!env.prod && process.env.SISO Notes_PRO_PUBLIC_KEY) {
-      return Buffer.from(process.env.SISO Notes_PRO_PUBLIC_KEY);
+    if (!env.prod && process.env.SisoNotes_PRO_PUBLIC_KEY) {
+      return Buffer.from(process.env.SisoNotes_PRO_PUBLIC_KEY);
     }
 
     return null;
   }
 
-  private loadSISO NotesProLicenseAESKey() {
+  private loadSisoNotesProLicenseAESKey() {
     if (SISO_NOTES_PRO_LICENSE_AES_KEY) {
       return this.sha256(SISO_NOTES_PRO_LICENSE_AES_KEY);
     } else {
@@ -329,8 +329,8 @@ export class CryptoHelper implements OnModuleInit {
       );
     }
 
-    if (!env.prod && process.env.SISO Notes_PRO_LICENSE_AES_KEY) {
-      return this.sha256(process.env.SISO Notes_PRO_LICENSE_AES_KEY);
+    if (!env.prod && process.env.SisoNotes_PRO_LICENSE_AES_KEY) {
+      return this.sha256(process.env.SisoNotes_PRO_LICENSE_AES_KEY);
     }
 
     return null;

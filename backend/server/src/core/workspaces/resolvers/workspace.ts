@@ -12,7 +12,7 @@ import GraphQLUpload from 'graphql-upload/GraphQLUpload.mjs';
 
 import type { FileUpload } from '../../../base';
 import {
-  SISO NotesLogger,
+  SisoNotesLogger,
   registerObjectType,
   SpaceAccessDenied,
   SpaceNotFound,
@@ -69,7 +69,7 @@ export class WorkspaceResolver {
     private readonly quota: QuotaService,
     private readonly models: Models,
     private readonly workspaceService: WorkspaceService,
-    private readonly logger: SISO NotesLogger
+    private readonly logger: SisoNotesLogger
   ) {
     logger.setContext(WorkspaceResolver.name);
   }

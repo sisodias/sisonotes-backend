@@ -9,7 +9,7 @@ import {
 import { PrismaClient } from '@prisma/client';
 
 import { buildAppModule, FunctionalityModules } from '../../app.module';
-import { SISO NotesLogger, ConfigFactory, JobModule, JobQueue } from '../../base';
+import { SisoNotesLogger, ConfigFactory, JobModule, JobQueue } from '../../base';
 import { GqlModule } from '../../base/graphql';
 import { ServerConfigModule } from '../../core';
 import { AuthGuard, AuthModule } from '../../core/auth';
@@ -152,7 +152,7 @@ export async function createTestingModule(
   testingModule.mails = module.get(Mailer, { strict: false }) as MockMailer;
   testingModule.queue = module.get(JobQueue, { strict: false }) as MockJobQueue;
 
-  const logger = new SISO NotesLogger();
+  const logger = new SisoNotesLogger();
   // we got a lot smoking tests try to break nestjs
   // can't tolerate the noisy logs
   logger.setLogLevels([TEST_LOG_LEVEL]);

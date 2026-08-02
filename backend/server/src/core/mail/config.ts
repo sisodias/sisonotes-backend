@@ -61,8 +61,8 @@ defineModuleConfig('mailer', {
     env: 'MAILER_PASSWORD',
   },
   'SMTP.sender': {
-    desc: 'Sender of all the emails (e.g. "SISO Notes Self Hosted &lt;noreply@example.com&gt;")',
-    default: 'SISO Notes Self Hosted <noreply@example.com>',
+    desc: 'Sender of all the emails (e.g. "SisoNotes Self Hosted &lt;noreply@example.com&gt;")',
+    default: 'SisoNotes Self Hosted <noreply@example.com>',
     env: 'MAILER_SENDER',
   },
   'SMTP.ignoreTLS': {
@@ -112,7 +112,7 @@ defineModuleConfig('mailer', {
     default: '',
   },
   'fallbackSMTP.sender': {
-    desc: 'Sender of all the emails (e.g. "SISO Notes Self Hosted &lt;noreply@example.com&gt;")',
+    desc: 'Sender of all the emails (e.g. "SisoNotes Self Hosted &lt;noreply@example.com&gt;")',
     default: '',
   },
   'fallbackSMTP.ignoreTLS': {

@@ -667,7 +667,7 @@ test('capability runtime should require explicit structured schema contract', as
   const error = await t.throwsAsync(() =>
     runtime.generateStructuredValue(
       { modelId: 'gpt-5-mini' },
-      singleUserPromptMessages('Summarize SISO Notes.'),
+      singleUserPromptMessages('Summarize SisoNotes.'),
       {
         responseSchemaJson: {
           type: 'object',
@@ -777,7 +777,7 @@ test('should be able to update chat session prompt', async t => {
   // Update the session
   const updatedSessionId = await session.update({
     sessionId,
-    promptName: 'Chat With SISO Notes AI',
+    promptName: 'Chat With SisoNotes AI',
     userId,
   });
   t.is(updatedSessionId, sessionId, 'should update session with same id');
@@ -787,7 +787,7 @@ test('should be able to update chat session prompt', async t => {
   t.truthy(updatedSession, 'should retrieve updated session');
   t.is(
     updatedSession?.config.promptName,
-    'Chat With SISO Notes AI',
+    'Chat With SisoNotes AI',
     'should have updated prompt name'
   );
 });
@@ -1463,8 +1463,8 @@ test('tool bridge should execute with parsed zod args and preserve callback resp
   const request: LlmToolCallbackRequest = {
     callId: 'call-2',
     name: 'safeTool',
-    args: { name: ' SISO Notes ' },
-    rawArgumentsText: '{"name":" SISO Notes "}',
+    args: { name: ' SisoNotes ' },
+    rawArgumentsText: '{"name":" SisoNotes "}',
   };
 
   const response = await executeToolCall(tools, request, options);
@@ -1473,12 +1473,12 @@ test('tool bridge should execute with parsed zod args and preserve callback resp
   t.deepEqual(response, {
     callId: 'call-2',
     name: 'safeTool',
-    args: { name: ' SISO Notes ' },
-    rawArgumentsText: '{"name":" SISO Notes "}',
+    args: { name: ' SisoNotes ' },
+    rawArgumentsText: '{"name":" SisoNotes "}',
     argumentParseError: undefined,
     output: { message: 'executed' },
   });
-  t.deepEqual(execute.firstCall.args, [{ name: 'SISO Notes' }, options]);
+  t.deepEqual(execute.firstCall.args, [{ name: 'SisoNotes' }, options]);
 });
 
 test('tool bridge should reject malformed or unknown tool calls without executing tools', async t => {

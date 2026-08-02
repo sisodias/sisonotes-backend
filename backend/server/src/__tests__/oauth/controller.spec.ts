@@ -566,7 +566,7 @@ function createOidcRegistrationHarness(config?: {
   const provider = new OIDCProvider(new URLHelper(sisonotesConfig as any));
 
   (provider as any).factory = factory;
-  (provider as any).SISO NotesConfig = sisonotesConfig;
+  (provider as any).SisoNotesConfig = sisonotesConfig;
 
   return {
     provider,

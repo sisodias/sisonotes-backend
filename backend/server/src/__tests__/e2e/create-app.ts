@@ -10,7 +10,7 @@ import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs';
 import supertest from 'supertest';
 
 import {
-  SISO NotesLogger,
+  SisoNotesLogger,
   CacheInterceptor,
   CloudThrottlerGuard,
   ConfigFactory,
@@ -285,7 +285,7 @@ export async function createApp(
     rawBody: true,
   });
 
-  const logger = new SISO NotesLogger();
+  const logger = new SisoNotesLogger();
   logger.setLogLevels([TEST_LOG_LEVEL]);
   app.useLogger(logger);
   app.use(cookieParser());

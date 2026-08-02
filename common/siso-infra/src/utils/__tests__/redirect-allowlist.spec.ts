@@ -13,7 +13,7 @@ describe('redirect allowlist', () => {
 
   test('allows trusted domains and subdomains', () => {
     expect(
-      isAllowedRedirectTarget('https://github.com/sisoagency/SISO Notes', {
+      isAllowedRedirectTarget('https://github.com/sisoagency/SisoNotes', {
         currentHostname: 'self.example.com',
       })
     ).toBe(true);

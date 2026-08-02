@@ -7,7 +7,7 @@ import {
 import { PrismaClient } from '@prisma/client';
 
 import { FunctionalityModules } from '../app.module';
-import { SISO NotesLogger, EventBus, JobModule, JobQueue } from '../base';
+import { SisoNotesLogger, EventBus, JobModule, JobQueue } from '../base';
 import {
   createFactory,
   MockEventBus,
@@ -57,7 +57,7 @@ export async function createModule(
 
   const module = (await builder.compile()) as TestingModule;
 
-  const logger = new SISO NotesLogger();
+  const logger = new SisoNotesLogger();
   // we got a lot smoking tests try to break nestjs
   // can't tolerate the noisy logs
   logger.setLogLevels([TEST_LOG_LEVEL]);

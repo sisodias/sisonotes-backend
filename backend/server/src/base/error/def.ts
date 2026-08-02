@@ -953,7 +953,7 @@ export const USER_FRIENDLY_ERRORS = {
       requiredVersion: 'string',
     },
     message: ({ requiredVersion }) =>
-      `This SISO Notes server is too old for this client. Please upgrade the server to ${requiredVersion}.`,
+      `This SisoNotes server is too old for this client. Please upgrade the server to ${requiredVersion}.`,
   },
 
   // Notification Errors

@@ -9,4 +9,4 @@ import { LoggerProvider } from './service';
 })
 export class GCloudLogging {}
 
-export { SISO NotesLogger } from './logger';
+export { SisoNotesLogger } from './logger';

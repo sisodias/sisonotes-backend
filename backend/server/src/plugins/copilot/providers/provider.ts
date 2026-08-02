@@ -53,7 +53,7 @@ export abstract class CopilotProvider<C = any> {
   ): CopilotModelBackendKind;
   abstract configured(execution?: CopilotProviderExecution): boolean;
 
-  @Inject() protected readonly SISO NotesConfig!: Config;
+  @Inject() protected readonly SisoNotesConfig!: Config;
   @Inject() protected readonly toolExecutorHost!: ToolExecutorHost;
 
   get maxSteps() {
@@ -174,7 +174,7 @@ export abstract class CopilotProvider<C = any> {
   }
 
   protected get config(): C {
-    return this.SISO NotesConfig.copilot.providers[this.type] as C;
+    return this.SisoNotesConfig.copilot.providers[this.type] as C;
   }
 
   protected getConfig(execution?: CopilotProviderExecution): C {

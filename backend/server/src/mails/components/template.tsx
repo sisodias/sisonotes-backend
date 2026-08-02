@@ -215,7 +215,7 @@ export function Template(props: PropsWithChildren) {
             <Link href="https://sisonotes.pro">
               <Img
                 src="https://cdn.sisonotes.pro/mail/2023-8-9/sisonotes-logo.png"
-                alt="SISO Notes logo"
+                alt="SisoNotes logo"
                 height="32px"
               />
             </Link>

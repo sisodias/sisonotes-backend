@@ -1,14 +1,14 @@
 import { Global, Module } from '@nestjs/common';
 
 import { ConfigModule } from '../config';
-import { SISO NotesLogger } from './service';
+import { SisoNotesLogger } from './service';
 
 @Global()
 @Module({
   imports: [ConfigModule],
-  providers: [SISO NotesLogger],
-  exports: [SISO NotesLogger],
+  providers: [SisoNotesLogger],
+  exports: [SisoNotesLogger],
 })
 export class LoggerModule {}
 
-export { SISO NotesLogger } from './service';
+export { SisoNotesLogger } from './service';

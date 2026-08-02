@@ -17,9 +17,9 @@ export type SignUpProps = {
 export default function SignUp(props: SignUpProps) {
   return (
     <Template>
-      <Title>{`Sign up to ${props.serverName ?? 'SISO Notes'}`}</Title>
+      <Title>{`Sign up to ${props.serverName ?? 'SisoNotes'}`}</Title>
       <Content>
-        <P>You are signing up to SISO Notes. Here is your code:</P>
+        <P>You are signing up to SisoNotes. Here is your code:</P>
         <OnelineCodeBlock>{props.otp}</OnelineCodeBlock>
         <P>
           Alternatively, you can sign up directly by clicking the magic link

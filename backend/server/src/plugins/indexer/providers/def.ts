@@ -136,10 +136,10 @@ export abstract class SearchProvider {
   protected readonly logger = new Logger(this.constructor.name);
 
   @Inject() private readonly factory!: SearchProviderFactory;
-  @Inject() private readonly SISO NotesConfig!: Config;
+  @Inject() private readonly SisoNotesConfig!: Config;
 
   protected get config() {
-    return this.SISO NotesConfig.indexer;
+    return this.SisoNotesConfig.indexer;
   }
 
   protected get configured() {

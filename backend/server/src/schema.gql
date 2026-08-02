@@ -2338,8 +2338,8 @@ type ServerConfigType {
 }
 
 enum ServerDeploymentType {
-  SisoNotes
   Selfhosted
+  SisoNotes
 }
 
 enum ServerFeature {

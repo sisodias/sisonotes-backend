@@ -1,10 +1,10 @@
-import { NestFactory } from '@nestjs/core';
-import type { NestExpressApplication } from '@nestjs/platform-express';
-import cookieParser from 'cookie-parser';
-import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs';
+import { NestFactory } from "@nestjs/core";
+import type { NestExpressApplication } from "@nestjs/platform-express";
+import cookieParser from "cookie-parser";
+import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs";
 
 import {
-  SISO NotesLogger,
+  SisoNotesLogger,
   buildCorsAllowedOrigins,
   CacheInterceptor,
   CloudThrottlerGuard,
@@ -15,16 +15,16 @@ import {
   corsOriginCallback,
   GlobalExceptionFilter,
   URLHelper,
-} from './base';
-import { SocketIoAdapter } from './base/websocket';
-import { AuthGuard } from './core/auth';
-import { TelemetryService } from './core/telemetry/service';
-import { serverTimingAndCache } from './middleware/timing';
+} from "./base";
+import { SocketIoAdapter } from "./base/websocket";
+import { AuthGuard } from "./core/auth";
+import { TelemetryService } from "./core/telemetry/service";
+import { serverTimingAndCache } from "./middleware/timing";
 
 const OneMB = 1024 * 1024;
 
 export async function run() {
-  const { AppModule } = await import('./app.module');
+  const { AppModule } = await import("./app.module");
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: false,
@@ -33,9 +33,9 @@ export async function run() {
     bufferLogs: true,
   });
 
-  app.useBodyParser('raw', { limit: 100 * OneMB });
+  app.useBodyParser("raw", { limit: 100 * OneMB });
 
-  const logger = app.get(SISO NotesLogger);
+  const logger = app.get(SisoNotesLogger);
   app.useLogger(logger);
   const config = app.get(Config);
   const url = app.get(URLHelper);
@@ -49,7 +49,7 @@ export async function run() {
   const defaultAllowedOrigins = buildCorsAllowedOrigins(url);
 
   app.enableCors((req, callback) => {
-    const requestPath = req.path ?? req.url ?? '';
+    const requestPath = req.path ?? req.url ?? "";
     const appendedOrigins = telemetry?.getAllowedOrigins(requestPath) ?? [];
     const finalAllowedOrigins = appendedOrigins.length
       ? new Set([...defaultAllowedOrigins, ...appendedOrigins])
@@ -60,15 +60,15 @@ export async function run() {
         corsOriginCallback(
           origin,
           finalAllowedOrigins,
-          blockedOrigin => {
+          (blockedOrigin) => {
             if (!appendedOrigins.length) {
               logger.warn(
                 `Blocked CORS request from origin: ${blockedOrigin}`,
-                { requestPath }
+                { requestPath },
               );
             }
           },
-          originCallback
+          originCallback,
         );
       },
       credentials: true,
@@ -90,7 +90,7 @@ export async function run() {
     graphqlUploadExpress({
       maxFileSize: 100 * OneMB,
       maxFiles: 32,
-    })
+    }),
   );
 
   app.useGlobalGuards(app.get(AuthGuard), app.get(CloudThrottlerGuard));
@@ -107,15 +107,15 @@ export async function run() {
   app.useWebSocketAdapter(adapter);
 
   if (env.dev) {
-    const { SwaggerModule, DocumentBuilder } = await import('@nestjs/swagger');
+    const { SwaggerModule, DocumentBuilder } = await import("@nestjs/swagger");
     // Swagger API Docs
     const docConfig = new DocumentBuilder()
-      .setTitle('SISO Notes API')
-      .setDescription(`SISO Notes Server ${env.version} API documentation`)
+      .setTitle("SisoNotes API")
+      .setDescription(`SisoNotes Server ${env.version} API documentation`)
       .setVersion(`${env.version}`)
       .build();
     const documentFactory = () => SwaggerModule.createDocument(app, docConfig);
-    SwaggerModule.setup('/api/docs', app, documentFactory, {
+    SwaggerModule.setup("/api/docs", app, documentFactory, {
       useGlobalPrefix: true,
       swaggerOptions: { persistAuthorization: true },
     });
@@ -123,11 +123,11 @@ export async function run() {
 
   await app.listen(config.server.port, config.server.listenAddr);
 
-  const formattedAddr = config.server.listenAddr.includes(':')
+  const formattedAddr = config.server.listenAddr.includes(":")
     ? `[${config.server.listenAddr}]`
     : config.server.listenAddr;
 
-  logger.log(`SISO Notes Server is running in [${env.DEPLOYMENT_TYPE}] mode`);
+  logger.log(`SisoNotes Server is running in [${env.DEPLOYMENT_TYPE}] mode`);
   logger.log(`Listening on http://${formattedAddr}:${config.server.port}`);
   logger.log(`And the public server should be recognized as ${url.baseUrl}`);
 }

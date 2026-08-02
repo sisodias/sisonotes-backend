@@ -298,8 +298,8 @@ export class EntitlementService {
           targetType: 'workspace',
           targetId: input.workspaceId,
           signedPayload: input.license,
-          publicKey: this.crypto.SISO NotesProPublicKey?.toString(),
-          licenseAesKey: this.crypto.SISO NotesProLicenseAESKey?.toString('hex'),
+          publicKey: this.crypto.SisoNotesProPublicKey?.toString(),
+          licenseAesKey: this.crypto.SisoNotesProLicenseAESKey?.toString('hex'),
           now: new Date().toISOString(),
         })
       : null;
@@ -516,8 +516,8 @@ export class EntitlementService {
         signedPayload: entitlement.signedPayload
           ? Buffer.from(entitlement.signedPayload)
           : undefined,
-        publicKey: this.crypto.SISO NotesProPublicKey?.toString(),
-        licenseAesKey: this.crypto.SISO NotesProLicenseAESKey?.toString('hex'),
+        publicKey: this.crypto.SisoNotesProPublicKey?.toString(),
+        licenseAesKey: this.crypto.SisoNotesProLicenseAESKey?.toString('hex'),
         now: new Date().toISOString(),
       });
     } catch (e) {

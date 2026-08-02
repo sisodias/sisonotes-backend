@@ -363,8 +363,8 @@ class TestGeminiProvider extends GeminiProvider<{ apiKey: string }> {
     () => ({
       id: 'structured_1',
       model: 'gemini-3.6-flash',
-      output_text: '{"summary":"SISO Notes native"}',
-      output_json: { summary: 'SISO Notes native' },
+      output_text: '{"summary":"SisoNotes native"}',
+      output_json: { summary: 'SisoNotes native' },
       usage: {
         prompt_tokens: 4,
         completion_tokens: 3,
@@ -535,8 +535,8 @@ class TestOpenAIProvider extends OpenAIProvider {
     request => ({
       id: 'structured_openai_1',
       model: request.model,
-      output_text: '{"summary":"SISO Notes structured"}',
-      output_json: { summary: 'SISO Notes structured' },
+      output_text: '{"summary":"SisoNotes structured"}',
+      output_json: { summary: 'SisoNotes structured' },
       usage: {
         prompt_tokens: 4,
         completion_tokens: 3,
@@ -974,7 +974,7 @@ test('buildCanonicalNativeRequest should only use explicit structured contract i
     model: 'gpt-4.1',
     messages: promptMessages(
       systemPrompt('Return valid JSON.'),
-      userPrompt('Summarize SISO Notes.')
+      userPrompt('Summarize SisoNotes.')
     ),
     responseContract: buildStructuredResponseContract(schema),
   });
@@ -1000,7 +1000,7 @@ test('buildCanonicalNativeStructuredRequest should accept schema-only explicit s
           strict: false,
         },
       },
-      { role: 'user', content: 'Summarize SISO Notes.' },
+      { role: 'user', content: 'Summarize SisoNotes.' },
     ],
     responseContract: {
       responseSchemaJson: {
@@ -1046,7 +1046,7 @@ test('buildCanonicalNativeStructuredRequest should honor explicit structured opt
           strict: false,
         },
       },
-      { role: 'user', content: 'Summarize SISO Notes.' },
+      { role: 'user', content: 'Summarize SisoNotes.' },
     ],
     options: {
       responseSchemaJson: {
@@ -1084,7 +1084,7 @@ test('buildCanonicalNativeStructuredRequest should consume explicit structured r
   const responseContract = buildStructuredResponseContract(schema);
   const { request } = await buildCanonicalNativeStructuredRequest({
     model: 'gemini-3.6-flash',
-    messages: jsonOnlyPromptMessages('Summarize SISO Notes.'),
+    messages: jsonOnlyPromptMessages('Summarize SisoNotes.'),
     options: { strict: false },
     responseContract,
   });
@@ -1095,7 +1095,7 @@ test('buildCanonicalNativeStructuredRequest should consume explicit structured r
 test('buildCanonicalNativeStructuredRequest should accept explicit schema contracts without schemaHash', async t => {
   const { request } = await buildCanonicalNativeStructuredRequest({
     model: 'gpt-4.1',
-    messages: jsonOnlyPromptMessages('Summarize SISO Notes.'),
+    messages: jsonOnlyPromptMessages('Summarize SisoNotes.'),
     responseContract: {
       responseSchemaJson: {
         type: 'object',
@@ -1241,7 +1241,7 @@ test('buildNativeStructuredRequest should prefer explicit schema option', async 
 
   await getProviderRuntimeHost(provider).run.structured(
     { modelId: 'gpt-4.1' },
-    jsonOnlyPromptMessages('Summarize SISO Notes in one sentence.'),
+    jsonOnlyPromptMessages('Summarize SisoNotes in one sentence.'),
     structuredOptions(schema),
     structuredContract(schema)
   );
@@ -1255,7 +1255,7 @@ test('buildNativeStructuredRequest should preserve caller strictness override', 
 
   await getProviderRuntimeHost(provider).run.structured(
     { modelId: 'gpt-4.1' },
-    jsonOnlyPromptMessages('Summarize SISO Notes in one sentence.'),
+    jsonOnlyPromptMessages('Summarize SisoNotes in one sentence.'),
     structuredOptions(z.object({ summary: z.string() }), { strict: false }),
     structuredContract(z.object({ summary: z.string() }))
   );
@@ -1272,7 +1272,7 @@ test('buildNativeStructuredRequest should ignore legacy params.schema fallback w
           schema: z.object({ summary: z.string() }),
         },
       }),
-      userPrompt('Summarize SISO Notes in one sentence.')
+      userPrompt('Summarize SisoNotes in one sentence.')
     ),
     responseContract: {
       responseSchemaJson: {
@@ -1296,7 +1296,7 @@ test('buildNativeStructuredRequest should reject legacy options.schema fallback'
   const error = await t.throwsAsync(() =>
     getProviderRuntimeHost(provider).run.structured(
       { modelId: 'gpt-4.1' },
-      jsonOnlyPromptMessages('Summarize SISO Notes in one sentence.'),
+      jsonOnlyPromptMessages('Summarize SisoNotes in one sentence.'),
       {
         schema: z.object({ summary: z.string() }),
       } as never
@@ -1372,12 +1372,12 @@ test('buildNativeStructuredRequest should preserve schemas and defer Gemini rewr
     await Promise.all([
       buildNativeStructuredRequest({
         model: 'gemini-3.6-flash',
-        messages: promptMessages(userPrompt('Summarize SISO Notes.')),
+        messages: promptMessages(userPrompt('Summarize SisoNotes.')),
         responseContract: buildStructuredResponseContract(schema),
       }),
       buildNativeStructuredRequest({
         model: 'gpt-4.1',
-        messages: promptMessages(userPrompt('Summarize SISO Notes.')),
+        messages: promptMessages(userPrompt('Summarize SisoNotes.')),
         responseContract: buildStructuredResponseContract(schema),
       }),
     ]);
@@ -1440,7 +1440,7 @@ test('GeminiProvider should use native path for structured requests', async t =>
   const schema = z.object({ summary: z.string() });
   const result = await getProviderRuntimeHost(provider).run.structured(
     { modelId: 'gemini-3.6-flash' },
-    jsonOnlyPromptMessages('Summarize SISO Notes in one short sentence.'),
+    jsonOnlyPromptMessages('Summarize SisoNotes in one short sentence.'),
     structuredOptions(schema),
     structuredContract(schema)
   );
@@ -1482,7 +1482,7 @@ test('GeminiProvider should retry when native structured dispatch returns invali
 
   const result = await getProviderRuntimeHost(provider).run.structured(
     { modelId: 'gemini-3.6-flash' },
-    jsonOnlyPromptMessages('Summarize SISO Notes in one short sentence.'),
+    jsonOnlyPromptMessages('Summarize SisoNotes in one short sentence.'),
     structuredOptions(z.object({ summary: z.string() }), { maxRetries: 2 }),
     structuredContract(z.object({ summary: z.string() }))
   );
@@ -1503,7 +1503,7 @@ test('GeminiProvider should treat maxRetries as retry count for backend failures
   const error = await t.throwsAsync(
     getProviderRuntimeHost(provider).run.structured(
       { modelId: 'gemini-3.6-flash' },
-      jsonOnlyPromptMessages('Summarize SISO Notes in one short sentence.'),
+      jsonOnlyPromptMessages('Summarize SisoNotes in one short sentence.'),
       structuredOptions(z.object({ summary: z.string() }), { maxRetries: 2 }),
       structuredContract(z.object({ summary: z.string() }))
     )
@@ -1888,7 +1888,7 @@ test('OpenAIProvider should use native structured dispatch', async t => {
 
   const result = await getProviderRuntimeHost(provider).run.structured(
     { modelId: 'gpt-4.1' },
-    jsonOnlyPromptMessages('Summarize SISO Notes in one sentence.'),
+    jsonOnlyPromptMessages('Summarize SisoNotes in one sentence.'),
     structuredOptions(schema),
     structuredContract(schema)
   );
@@ -1903,7 +1903,7 @@ test('OpenAIProvider should use native structured dispatch', async t => {
 test('parseNativeStructuredOutput should require native output_json', t => {
   const error = t.throws(() =>
     parseNativeStructuredOutput({
-      output_text: '{"summary":"SISO Notes"}',
+      output_text: '{"summary":"SisoNotes"}',
     })
   );
 
@@ -1924,14 +1924,14 @@ test('OpenAIProvider should prefer native output_json for structured dispatch', 
     id: 'structured_openai_output_json',
     model: request.model,
     output_text: 'not-json-anymore',
-    output_json: { summary: 'SISO Notes structured' },
+    output_json: { summary: 'SisoNotes structured' },
     usage: { prompt_tokens: 4, completion_tokens: 3, total_tokens: 7 },
     finish_reason: 'stop',
   });
 
   const result = await getProviderRuntimeHost(provider).run.structured(
     { modelId: 'gpt-4.1' },
-    jsonOnlyPromptMessages('Summarize SISO Notes in one sentence.'),
+    jsonOnlyPromptMessages('Summarize SisoNotes in one sentence.'),
     structuredOptions(z.object({ summary: z.string() })),
     structuredContract(z.object({ summary: z.string() }))
   );

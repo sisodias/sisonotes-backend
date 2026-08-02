@@ -75,12 +75,12 @@ export class ServerConfigResolver {
       name:
         this.config.server.name ??
         (env.selfhosted
-          ? 'SISO Notes Self-hosted'
+          ? 'SisoNotes Self-hosted'
           : env.namespaces.canary
-            ? 'SISO Notes Canary Cloud'
+            ? 'SisoNotes Canary Cloud'
             : env.namespaces.beta
-              ? 'SISO Notes Beta Cloud'
-              : 'SISO Notes Cloud'),
+              ? 'SisoNotes Beta Cloud'
+              : 'SisoNotes Cloud'),
       version: env.version,
       baseUrl: this.url.requestBaseUrl,
       type: env.DEPLOYMENT_TYPE,

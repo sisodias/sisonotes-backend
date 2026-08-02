@@ -460,7 +460,7 @@ export class LicenseService {
   private remoteLicense(response: LicenseResponse) {
     this.throwRemoteLicenseError(response.error);
     if (!response.license) {
-      throw new InternalServerError('Invalid SISO Notes license response.');
+      throw new InternalServerError('Invalid SisoNotes license response.');
     }
     return response.license;
   }
@@ -472,7 +472,7 @@ export class LicenseService {
   private remotePortal(response: PortalResponse) {
     this.throwRemoteLicenseError(response.error);
     if (!response.url) {
-      throw new InternalServerError('Invalid SISO Notes portal response.');
+      throw new InternalServerError('Invalid SisoNotes portal response.');
     }
     return { url: response.url };
   }
@@ -553,13 +553,13 @@ export class LicenseService {
   }
 
   private resolveWorkspaceTeamLicense(workspaceId: string | null, buf: Buffer) {
-    if (!this.crypto.SISO NotesProPublicKey) {
+    if (!this.crypto.SisoNotesProPublicKey) {
       throw new InternalServerError(
         'License public key is not loaded. Please contact with SisoNotes support.'
       );
     }
 
-    if (!this.crypto.SISO NotesProLicenseAESKey) {
+    if (!this.crypto.SisoNotesProLicenseAESKey) {
       throw new InternalServerError(
         'License AES key is not loaded. Please contact with SisoNotes support.'
       );
@@ -570,8 +570,8 @@ export class LicenseService {
       targetType: 'workspace',
       targetId: workspaceId ?? undefined,
       signedPayload: buf,
-      publicKey: this.crypto.SISO NotesProPublicKey.toString(),
-      licenseAesKey: this.crypto.SISO NotesProLicenseAESKey.toString('hex'),
+      publicKey: this.crypto.SisoNotesProPublicKey.toString(),
+      licenseAesKey: this.crypto.SisoNotesProLicenseAESKey.toString('hex'),
       now: new Date().toISOString(),
     });
 

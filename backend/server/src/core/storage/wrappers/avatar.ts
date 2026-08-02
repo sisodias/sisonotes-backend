@@ -7,11 +7,11 @@ import { StorageRuntimeProvider } from '../../storage-runtime';
 @Injectable()
 export class AvatarStorage {
   get config() {
-    return this.SISO NotesConfig.storages.avatar;
+    return this.SisoNotesConfig.storages.avatar;
   }
 
   constructor(
-    private readonly SISO NotesConfig: Config,
+    private readonly SisoNotesConfig: Config,
     private readonly url: URLHelper,
     private readonly rt: StorageRuntimeProvider
   ) {}

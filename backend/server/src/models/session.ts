@@ -1,13 +1,13 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from "@nestjs/common";
 import {
   Prisma,
   type Session,
   type User,
   type UserSession,
-} from '@prisma/client';
+} from "@prisma/client";
 
-import { Config } from '../base';
-import { BaseModel } from './base';
+import { Config } from "../base";
+import { BaseModel } from "./base";
 
 export type { Session, UserSession };
 export type UserSessionWithUser = UserSession & { user: User };
@@ -47,7 +47,7 @@ export class SessionModel extends BaseModel {
     userId: string,
     sessionId?: string,
     ttl = this.config.auth.session.ttl,
-    signInClientVersion?: string
+    signInClientVersion?: string,
   ) {
     // check whether given session is valid
     if (sessionId) {
@@ -88,10 +88,37 @@ export class SessionModel extends BaseModel {
     });
   }
 
+  async createOrRefreshExternalUserSession(
+    userId: string,
+    sessionId: string,
+    ttl = this.config.auth.session.ttl,
+    signInClientVersion?: string,
+  ) {
+    await this.db.session.upsert({
+      where: { id: sessionId },
+      update: {},
+      create: { id: sessionId },
+    });
+    const expiresAt = new Date(Date.now() + ttl * 1000);
+    return await this.db.userSession.upsert({
+      where: { sessionId_userId: { sessionId, userId } },
+      update: {
+        expiresAt,
+        ...(signInClientVersion ? { signInClientVersion } : {}),
+      },
+      create: {
+        sessionId,
+        userId,
+        expiresAt,
+        ...(signInClientVersion ? { signInClientVersion } : {}),
+      },
+    });
+  }
+
   async refreshUserSessionIfNeeded(
     userSession: UserSession,
     ttr = this.config.auth.session.ttr,
-    refreshClientVersion?: string
+    refreshClientVersion?: string,
   ): Promise<Date | undefined> {
     if (
       userSession.expiresAt &&
@@ -102,7 +129,7 @@ export class SessionModel extends BaseModel {
     }
 
     const newExpiresAt = new Date(
-      Date.now() + this.config.auth.session.ttl * 1000
+      Date.now() + this.config.auth.session.ttl * 1000,
     );
     await this.db.userSession.update({
       where: {
@@ -120,7 +147,7 @@ export class SessionModel extends BaseModel {
 
   async findUserSessionsBySessionId<T extends Prisma.UserSessionInclude>(
     sessionId: string,
-    include?: T
+    include?: T,
   ): Promise<(T extends { user: true } ? UserSessionWithUser : UserSession)[]> {
     return await this.db.userSession.findMany({
       where: {
@@ -128,7 +155,7 @@ export class SessionModel extends BaseModel {
         OR: [{ expiresAt: { gt: new Date() } }, { expiresAt: null }],
       },
       orderBy: {
-        createdAt: 'asc',
+        createdAt: "asc",
       },
       include: include as Prisma.UserSessionInclude,
     });
@@ -143,7 +170,7 @@ export class SessionModel extends BaseModel {
     });
     if (count > 0) {
       this.logger.log(
-        `Deleted user sessions success by userId: ${userId} and sessionId: ${sessionId}`
+        `Deleted user sessions success by userId: ${userId} and sessionId: ${sessionId}`,
       );
     }
     return count;

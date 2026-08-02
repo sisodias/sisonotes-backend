@@ -33,7 +33,7 @@ function buildProgram(logger: Logger) {
 
   program
     .name(getProgramName())
-    .description('SISO Notes server CLI')
+    .description('SisoNotes server CLI')
     .showHelpAfterError()
     .showSuggestionAfterError();
 

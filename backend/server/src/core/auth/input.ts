@@ -1,26 +1,26 @@
-import type { Request } from 'express';
-import { z } from 'zod';
+import type { Request } from "express";
+import { z } from "zod";
 
-import { getRequestCookie, getRequestHeader } from '../../base';
+import { getRequestCookie, getRequestHeader } from "../../base";
 
-export const CLIENT_KIND_HEADER = 'x-sisonotes-client-kind';
-export const SESSION_COOKIE_NAME = 'sisonotes_session';
-export const USER_COOKIE_NAME = 'sisonotes_user_id';
-export const CSRF_COOKIE_NAME = 'sisonotes_csrf_token';
+export const CLIENT_KIND_HEADER = "x-sisonotes-client-kind";
+export const SESSION_COOKIE_NAME = "sisonotes_session";
+export const USER_COOKIE_NAME = "sisonotes_user_id";
+export const CSRF_COOKIE_NAME = "sisonotes_csrf_token";
 
 const NativeClientOriginSchema = z
-  .enum(['capacitor://localhost', 'ionic://localhost', 'https://localhost'])
+  .enum(["capacitor://localhost", "ionic://localhost", "https://localhost"])
   .optional();
 
 const NativeClientHeadersSchema = z.object({
-  clientKind: z.literal('native'),
+  clientKind: z.literal("native"),
   origin: NativeClientOriginSchema,
 });
 
 export const BearerHeaderSchema = z
   .string()
   .regex(/^Bearer\s+\S+$/i)
-  .transform(value => value.replace(/^Bearer\s+/i, ''));
+  .transform((value) => value.replace(/^Bearer\s+/i, ""));
 
 export function extractTokenFromHeader(authorization: string) {
   const parsed = BearerHeaderSchema.safeParse(authorization);
@@ -71,7 +71,7 @@ export const AuthSessionExchangeBodySchema = z
   .object({
     code: ChallengeTokenSchema,
     installationId: z.string().uuid(),
-    platform: z.enum(['ios', 'android', 'electron']),
+    platform: z.enum(["ios", "android", "electron"]),
     deviceName: z.string().trim().min(1).max(200).optional(),
   })
   .strict();
@@ -84,10 +84,10 @@ export const AuthSessionRefreshBodySchema = z
 
 export function getSessionOptionsFromRequest(req: Request) {
   const sessionId = SessionIdSchema.safeParse(
-    getRequestCookie(req, SESSION_COOKIE_NAME)
+    getRequestCookie(req, SESSION_COOKIE_NAME),
   );
   const userId = UserIdSchema.safeParse(
-    getRequestCookie(req, USER_COOKIE_NAME)
+    getRequestCookie(req, USER_COOKIE_NAME),
   );
 
   return {
@@ -98,7 +98,9 @@ export function getSessionOptionsFromRequest(req: Request) {
 
 export function isNativeClientRequest(req: Request) {
   return NativeClientHeadersSchema.safeParse({
-    clientKind: getRequestHeader(req, CLIENT_KIND_HEADER),
-    origin: getRequestHeader(req, 'origin'),
+    clientKind:
+      getRequestHeader(req, CLIENT_KIND_HEADER) ??
+      getRequestHeader(req, "x-affine-client-kind"),
+    origin: getRequestHeader(req, "origin"),
   }).success;
 }

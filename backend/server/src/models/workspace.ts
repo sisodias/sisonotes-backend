@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { Transactional } from '@nestjs-cls/transactional';
-import { Prisma, type Workspace as WorkspaceRecord } from '@prisma/client';
+import { Injectable } from "@nestjs/common";
+import { Transactional } from "@nestjs-cls/transactional";
+import { Prisma, type Workspace as WorkspaceRecord } from "@prisma/client";
 
-import { EventBus } from '../base';
-import { BaseModel } from './base';
+import { EventBus } from "../base";
+import { BaseModel } from "./base";
 
 type RawWorkspaceSummary = {
   id: string;
@@ -53,8 +53,8 @@ export type AdminWorkspaceSummary = {
 
 declare global {
   interface Events {
-    'workspace.updated': Workspace;
-    'workspace.deleted': {
+    "workspace.updated": Workspace;
+    "workspace.deleted": {
       id: string;
     };
   }
@@ -67,12 +67,12 @@ export type Workspace = WorkspaceRecord & {
 };
 export type UpdateWorkspaceInput = Pick<
   Partial<WorkspaceRecord>,
-  | 'enableAi'
-  | 'enableDocEmbedding'
-  | 'name'
-  | 'avatarKey'
-  | 'indexed'
-  | 'lastCheckEmbeddings'
+  | "enableAi"
+  | "enableDocEmbedding"
+  | "name"
+  | "avatarKey"
+  | "indexed"
+  | "lastCheckEmbeddings"
 > & {
   public?: boolean;
   enableSharing?: boolean;
@@ -90,12 +90,13 @@ export class WorkspaceModel extends BaseModel {
    * Create a new workspace for the user, default to private.
    */
   @Transactional()
-  async create(userId: string) {
+  async create(userId: string, workspaceId?: string) {
     const workspace = await this.db.workspace.create({
       data: {
+        id: workspaceId,
         accessPolicy: {
           create: {
-            visibility: 'private',
+            visibility: "private",
             sharingEnabled: true,
             urlPreviewEnabled: false,
           },
@@ -108,6 +109,27 @@ export class WorkspaceModel extends BaseModel {
     return this.withAccessPolicy(workspace);
   }
 
+  @Transactional()
+  async ensureHostWorkspace(workspaceId: string, userId: string) {
+    const workspace = await this.db.workspace.upsert({
+      where: { id: workspaceId },
+      update: {},
+      create: {
+        id: workspaceId,
+        accessPolicy: {
+          create: {
+            visibility: "private",
+            sharingEnabled: true,
+            urlPreviewEnabled: false,
+          },
+        },
+      },
+      include: { accessPolicy: true },
+    });
+    await this.models.workspaceUser.setOwner(workspace.id, userId);
+    return this.withAccessPolicy(workspace);
+  }
+
   /**
    * Update the workspace with the given data.
    */
@@ -115,7 +137,7 @@ export class WorkspaceModel extends BaseModel {
   async update(
     workspaceId: string,
     data: UpdateWorkspaceInput,
-    notifyUpdate = true
+    notifyUpdate = true,
   ) {
     const {
       public: isPublic,
@@ -146,11 +168,11 @@ export class WorkspaceModel extends BaseModel {
       throw new Error(`Workspace ${workspaceId} not found after update`);
     }
     this.logger.debug(
-      `Updated workspace ${workspaceId} with data ${JSON.stringify(data)}`
+      `Updated workspace ${workspaceId} with data ${JSON.stringify(data)}`,
     );
 
     if (notifyUpdate) {
-      this.event.emit('workspace.updated', workspace);
+      this.event.emit("workspace.updated", workspace);
     }
 
     return workspace;
@@ -173,20 +195,20 @@ export class WorkspaceModel extends BaseModel {
       },
       include: { accessPolicy: true },
     });
-    return workspaces.map(workspace => this.withAccessPolicy(workspace));
+    return workspaces.map((workspace) => this.withAccessPolicy(workspace));
   }
 
   async list<S extends Prisma.WorkspaceSelect>(
     where: Prisma.WorkspaceWhereInput = {},
     select?: S,
-    limit?: number
+    limit?: number,
   ) {
     return (await this.db.workspace.findMany({
       where,
       select,
       take: limit,
       orderBy: {
-        sid: 'asc',
+        sid: "asc",
       },
     })) as Prisma.WorkspaceGetPayload<{ select: S }>[];
   }
@@ -200,7 +222,7 @@ export class WorkspaceModel extends BaseModel {
     });
 
     if (rawResult.count > 0) {
-      this.event.emit('workspace.deleted', { id: workspaceId });
+      this.event.emit("workspace.deleted", { id: workspaceId });
       this.logger.log(`Workspace [${workspaceId}] deleted`);
     }
   }
@@ -230,15 +252,15 @@ export class WorkspaceModel extends BaseModel {
     const now = new Date();
     const count = await this.db.entitlement.count({
       where: {
-        targetType: 'workspace',
+        targetType: "workspace",
         targetId: workspaceId,
-        plan: { in: ['team', 'selfhost_team'] },
+        plan: { in: ["team", "selfhost_team"] },
         OR: [
           {
-            status: 'active',
+            status: "active",
             OR: [{ expiresAt: null }, { expiresAt: { gt: now } }],
           },
-          { status: 'grace', graceUntil: { gt: now } },
+          { status: "grace", graceUntil: { gt: now } },
         ],
       },
     });
@@ -249,12 +271,12 @@ export class WorkspaceModel extends BaseModel {
   private withAccessPolicy(
     workspace: Prisma.WorkspaceGetPayload<{
       include: { accessPolicy: true };
-    }>
+    }>,
   ): Workspace {
     const { accessPolicy, ...data } = workspace;
     return {
       ...data,
-      public: accessPolicy?.visibility === 'public',
+      public: accessPolicy?.visibility === "public",
       enableSharing: accessPolicy?.sharingEnabled ?? true,
       enableUrlPreview: accessPolicy?.urlPreviewEnabled ?? false,
     };
@@ -274,13 +296,13 @@ export class WorkspaceModel extends BaseModel {
       enableDocEmbedding?: boolean;
     };
     order?:
-      | 'createdAt'
-      | 'snapshotSize'
-      | 'blobCount'
-      | 'blobSize'
-      | 'snapshotCount'
-      | 'memberCount'
-      | 'publicPageCount';
+      | "createdAt"
+      | "snapshotSize"
+      | "blobCount"
+      | "blobSize"
+      | "snapshotCount"
+      | "memberCount"
+      | "publicPageCount";
     includeTotal?: boolean;
   }): Promise<{ rows: AdminWorkspaceSummary[]; total: number }> {
     const keyword = options.keyword?.trim();
@@ -309,7 +331,7 @@ export class WorkspaceModel extends BaseModel {
           JOIN workspace_access_policies wap ON wap.workspace_id = w.id
           WHERE ${
             this.buildAdminFlagWhere(flags).length
-              ? Prisma.join(this.buildAdminFlagWhere(flags), ' AND ')
+              ? Prisma.join(this.buildAdminFlagWhere(flags), " AND ")
               : Prisma.sql`TRUE`
           }
         ),
@@ -386,9 +408,9 @@ export class WorkspaceModel extends BaseModel {
           keyword
             ? Prisma.sql`
                 (
-                  w.id ILIKE ${'%' + keyword + '%'}
-                  OR o.owner_id ILIKE ${'%' + keyword + '%'}
-                  OR o.owner_email ILIKE ${'%' + keyword + '%'}
+                  w.id ILIKE ${"%" + keyword + "%"}
+                  OR o.owner_id ILIKE ${"%" + keyword + "%"}
+                  OR o.owner_email ILIKE ${"%" + keyword + "%"}
                 )
               `
             : Prisma.sql`TRUE`
@@ -397,7 +419,7 @@ export class WorkspaceModel extends BaseModel {
           this.buildAdminFlagWhere(flags).length
             ? Prisma.sql`AND ${Prisma.join(
                 this.buildAdminFlagWhere(flags),
-                ' AND '
+                " AND ",
               )}`
             : Prisma.empty
         }
@@ -420,7 +442,7 @@ export class WorkspaceModel extends BaseModel {
   }
 
   private mapAdminWorkspaceRows(rows: RawWorkspaceSummary[]) {
-    return rows.map(row => ({
+    return rows.map((row) => ({
       id: row.id,
       public: row.public,
       createdAt: row.createdAt,
@@ -439,8 +461,8 @@ export class WorkspaceModel extends BaseModel {
       owner: row.ownerId
         ? {
             id: row.ownerId,
-            name: row.ownerName ?? '',
-            email: row.ownerEmail ?? '',
+            name: row.ownerName ?? "",
+            email: row.ownerEmail ?? "",
             avatarUrl: row.ownerAvatarUrl,
           }
         : null,
@@ -511,7 +533,7 @@ export class WorkspaceModel extends BaseModel {
         JOIN workspace_access_policies wap ON wap.workspace_id = w.id
         WHERE ${
           this.buildAdminFlagWhere(flags).length
-            ? Prisma.join(this.buildAdminFlagWhere(flags), ' AND ')
+            ? Prisma.join(this.buildAdminFlagWhere(flags), " AND ")
             : Prisma.sql`TRUE`
         }
       `;
@@ -542,9 +564,9 @@ export class WorkspaceModel extends BaseModel {
           keyword
             ? Prisma.sql`
                 (
-                  w.id ILIKE ${'%' + keyword + '%'}
-                  OR o.owner_id ILIKE ${'%' + keyword + '%'}
-                  OR o.owner_email ILIKE ${'%' + keyword + '%'}
+                  w.id ILIKE ${"%" + keyword + "%"}
+                  OR o.owner_id ILIKE ${"%" + keyword + "%"}
+                  OR o.owner_email ILIKE ${"%" + keyword + "%"}
                 )
               `
             : Prisma.sql`TRUE`
@@ -553,7 +575,7 @@ export class WorkspaceModel extends BaseModel {
           this.buildAdminFlagWhere(flags).length
             ? Prisma.sql`AND ${Prisma.join(
                 this.buildAdminFlagWhere(flags),
-                ' AND '
+                " AND ",
               )}`
             : Prisma.empty
         }
@@ -574,7 +596,7 @@ export class WorkspaceModel extends BaseModel {
     const conditions: Prisma.Sql[] = [];
     if (flags.public !== undefined) {
       conditions.push(
-        Prisma.sql`(wap.visibility = 'public') = ${flags.public}`
+        Prisma.sql`(wap.visibility = 'public') = ${flags.public}`,
       );
     }
     if (flags.enableAi !== undefined) {
@@ -585,12 +607,12 @@ export class WorkspaceModel extends BaseModel {
     }
     if (flags.enableUrlPreview !== undefined) {
       conditions.push(
-        Prisma.sql`wap.url_preview_enabled = ${flags.enableUrlPreview}`
+        Prisma.sql`wap.url_preview_enabled = ${flags.enableUrlPreview}`,
       );
     }
     if (flags.enableDocEmbedding !== undefined) {
       conditions.push(
-        Prisma.sql`w.enable_doc_embedding = ${flags.enableDocEmbedding}`
+        Prisma.sql`w.enable_doc_embedding = ${flags.enableDocEmbedding}`,
       );
     }
     return conditions;
@@ -598,28 +620,28 @@ export class WorkspaceModel extends BaseModel {
 
   private buildAdminOrder(
     order?:
-      | 'createdAt'
-      | 'snapshotSize'
-      | 'blobCount'
-      | 'blobSize'
-      | 'snapshotCount'
-      | 'memberCount'
-      | 'publicPageCount'
+      | "createdAt"
+      | "snapshotSize"
+      | "blobCount"
+      | "blobSize"
+      | "snapshotCount"
+      | "memberCount"
+      | "publicPageCount",
   ) {
     switch (order) {
-      case 'snapshotSize':
+      case "snapshotSize":
         return `"snapshotSize" DESC NULLS LAST, "createdAt" DESC, "id" ASC`;
-      case 'blobCount':
+      case "blobCount":
         return `"blobCount" DESC NULLS LAST, "createdAt" DESC, "id" ASC`;
-      case 'blobSize':
+      case "blobSize":
         return `"blobSize" DESC NULLS LAST, "createdAt" DESC, "id" ASC`;
-      case 'snapshotCount':
+      case "snapshotCount":
         return `"snapshotCount" DESC NULLS LAST, "createdAt" DESC, "id" ASC`;
-      case 'memberCount':
+      case "memberCount":
         return `"memberCount" DESC NULLS LAST, "createdAt" DESC, "id" ASC`;
-      case 'publicPageCount':
+      case "publicPageCount":
         return `"publicPageCount" DESC NULLS LAST, "createdAt" DESC, "id" ASC`;
-      case 'createdAt':
+      case "createdAt":
       default:
         return `"createdAt" DESC, "id" ASC`;
     }

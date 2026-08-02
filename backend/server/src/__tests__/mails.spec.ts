@@ -35,7 +35,7 @@ test('should reject invalid SMTP HELO hostnames', t => {
   t.is(normalizeSMTPHeloHostname(), undefined);
   t.is(normalizeSMTPHeloHostname(''), undefined);
   t.is(normalizeSMTPHeloHostname('  '), undefined);
-  t.is(normalizeSMTPHeloHostname('SISO Notes Server'), undefined);
+  t.is(normalizeSMTPHeloHostname('SisoNotes Server'), undefined);
   t.is(normalizeSMTPHeloHostname('-example.com'), undefined);
   t.is(normalizeSMTPHeloHostname('example-.com'), undefined);
   t.is(normalizeSMTPHeloHostname('example..com'), undefined);

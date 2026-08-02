@@ -15,7 +15,7 @@ import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs';
 import supertest from 'supertest';
 
 import {
-  SISO NotesLogger,
+  SisoNotesLogger,
   ApplyType,
   GlobalExceptionFilter,
   JobQueue,
@@ -48,7 +48,7 @@ export async function createTestingApp(
   moduleDef: TestingAppMetadata = {}
 ): Promise<TestingApp> {
   const module = await createTestingModule(moduleDef, false);
-  const logger = new SISO NotesLogger();
+  const logger = new SisoNotesLogger();
   logger.setLogLevels([TEST_LOG_LEVEL]);
 
   const app = module.createNestApplication<NestExpressApplication>({

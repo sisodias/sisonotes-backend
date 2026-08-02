@@ -1,13 +1,13 @@
-import { randomUUID } from 'node:crypto';
-import { IncomingMessage } from 'node:http';
+import { randomUUID } from "node:crypto";
+import { IncomingMessage } from "node:http";
 
-import type { ArgumentsHost, ExecutionContext } from '@nestjs/common';
-import type { GqlContextType } from '@nestjs/graphql';
-import { GqlArgumentsHost } from '@nestjs/graphql';
-import type { Request, Response } from 'express';
-import { ClsServiceManager } from 'nestjs-cls';
-import type { Socket } from 'socket.io';
-import { z } from 'zod';
+import type { ArgumentsHost, ExecutionContext } from "@nestjs/common";
+import type { GqlContextType } from "@nestjs/graphql";
+import { GqlArgumentsHost } from "@nestjs/graphql";
+import type { Request, Response } from "express";
+import { ClsServiceManager } from "nestjs-cls";
+import type { Socket } from "socket.io";
+import { z } from "zod";
 
 type RequestResponse = {
   req: Request;
@@ -18,10 +18,10 @@ const RequestCookieValueSchema = z.string().min(1);
 const RequestHeaderValueSchema = z.string().min(1);
 
 export function getRequestResponseFromHost(
-  host: ArgumentsHost
+  host: ArgumentsHost,
 ): RequestResponse {
   switch (host.getType<GqlContextType>()) {
-    case 'graphql': {
+    case "graphql": {
       const gqlContext = GqlArgumentsHost.create(host).getContext<{
         req: Request;
       }>();
@@ -30,20 +30,20 @@ export function getRequestResponseFromHost(
         res: gqlContext.req.res,
       };
     }
-    case 'http': {
+    case "http": {
       const http = host.switchToHttp();
       return {
         req: http.getRequest<Request>(),
         res: http.getResponse<Response>(),
       };
     }
-    case 'ws': {
+    case "ws": {
       const ws = host.switchToWs();
       const req = ws.getClient<Socket>().request as Request;
       parseCookies(req);
       return { req };
     }
-    case 'rpc': {
+    case "rpc": {
       const rpc = host.switchToRpc();
       const { req } = rpc.getContext<{ req: Request }>();
 
@@ -60,7 +60,7 @@ export function getRequestFromHost(host: ArgumentsHost): Request {
 }
 
 export function getRequestResponseFromContext(
-  ctx: ExecutionContext
+  ctx: ExecutionContext,
 ): RequestResponse {
   return getRequestResponseFromHost(ctx);
 }
@@ -70,14 +70,14 @@ export function getRequestResponseFromContext(
  * only take effect if `req.cookies` is not defined
  */
 export function parseCookies(
-  req: IncomingMessage & { cookies?: Record<string, string> }
+  req: IncomingMessage & { cookies?: Record<string, string> },
 ) {
   if (req.cookies) return;
 
-  const cookieStr = req.headers.cookie ?? '';
-  req.cookies = cookieStr.split(';').reduce(
+  const cookieStr = req.headers.cookie ?? "";
+  req.cookies = cookieStr.split(";").reduce(
     (cookies, cookie) => {
-      const [key, val] = cookie.split('=');
+      const [key, val] = cookie.split("=");
 
       if (key) {
         const rawKey = key.trim();
@@ -101,13 +101,13 @@ export function parseCookies(
 
       return cookies;
     },
-    {} as Record<string, string>
+    {} as Record<string, string>,
   );
 }
 
 export function getRequestCookie(
   req: IncomingMessage & { cookies?: Record<string, unknown> },
-  name: string
+  name: string,
 ) {
   parseCookies(req as IncomingMessage & { cookies?: Record<string, string> });
 
@@ -135,7 +135,7 @@ export function getRequestHeader(req: IncomingMessage, name: string) {
  * - `job`: cron job
  * - `rpc`: rpc request
  */
-export type RequestType = GqlContextType | 'event' | 'job';
+export type RequestType = GqlContextType | "event" | "job";
 
 export function genRequestId(type: RequestType) {
   return `${env.DEPLOYMENT_TYPE}:${type}:${randomUUID()}`;
@@ -148,15 +148,15 @@ export function getOrGenRequestId(type: RequestType) {
 }
 
 export function getRequestIdFromRequest(req: Request, type: RequestType) {
-  const traceContext = req.headers['x-cloud-trace-context'] as string;
-  const traceId = traceContext ? traceContext.split('/', 1)[0] : undefined;
+  const traceContext = req.headers["x-cloud-trace-context"] as string;
+  const traceId = traceContext ? traceContext.split("/", 1)[0] : undefined;
   if (traceId) return traceId;
   return genRequestId(type);
 }
 
 export function getRequestIdFromHost(host: ArgumentsHost) {
   const type = host.getType<GqlContextType>();
-  if (type === 'ws') {
+  if (type === "ws") {
     return genRequestId(type);
   }
   const req = getRequestFromHost(host);
@@ -164,7 +164,8 @@ export function getRequestIdFromHost(host: ArgumentsHost) {
 }
 
 export function getClientVersionFromRequest(req: Request) {
-  let version = req.headers['x-sisonotes-version'];
+  let version =
+    req.headers["x-sisonotes-version"] ?? req.headers["x-affine-version"];
   if (Array.isArray(version)) {
     version = version[0];
   }

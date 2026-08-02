@@ -126,9 +126,9 @@ export const FunctionalityModules = [
 ];
 
 export class AppModuleBuilder {
-  private readonly modules: SISO NotesModule[] = [];
+  private readonly modules: SisoNotesModule[] = [];
 
-  use(...modules: SISO NotesModule[]): this {
+  use(...modules: SisoNotesModule[]): this {
     modules.forEach(m => {
       this.modules.push(m);
     });
@@ -136,7 +136,7 @@ export class AppModuleBuilder {
     return this;
   }
 
-  useIf(predicator: () => boolean, ...modules: SISO NotesModule[]): this {
+  useIf(predicator: () => boolean, ...modules: SisoNotesModule[]): this {
     if (predicator()) {
       this.use(...modules);
     }

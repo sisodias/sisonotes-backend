@@ -954,7 +954,7 @@ test('should preserve persisted assistant render trace on history reload', async
       toolCallId: 'call_1',
       toolName: 'doc_read',
       args: { docId: 'doc-1' },
-      result: { markdown: '# SISO Notes' },
+      result: { markdown: '# SisoNotes' },
     } as const;
     yield { type: 'text-delta', textDelta: 'Final ' } as const;
     yield { type: 'text-delta', textDelta: 'answer' } as const;
@@ -1027,7 +1027,7 @@ test('should preserve persisted assistant render trace on history reload', async
       toolCallId: 'call_1',
       toolName: 'doc_read',
       args: { docId: 'doc-1' },
-      result: { markdown: '# SISO Notes' },
+      result: { markdown: '# SisoNotes' },
       textDelta: null,
     },
     {

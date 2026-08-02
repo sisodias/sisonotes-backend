@@ -163,10 +163,6 @@ export declare function activateLicense(request: LicenseKeyRequest): Promise<Lic
  */
 export declare function addDocToRootDoc(rootDocBin: Buffer, docId: string, title?: string | undefined | null): Buffer
 
-export const SISO_NOTES_PRO_LICENSE_AES_KEY: string | undefined | null
-
-export const SISO_NOTES_PRO_PUBLIC_KEY: string | undefined | null
-
 export declare function assertSafeUrl(request: AssertSafeUrlRequest): void
 
 export interface AssertSafeUrlRequest {
@@ -1218,6 +1214,10 @@ export interface SafeFetchResponse {
 export declare function scanContentPolicyV1(input: ContentPolicyScanInput): ContentPolicyScanResult
 
 export declare function signAuthSessionAccessToken(userId: string, authSessionId: string, keyId: string, secret: Buffer, issuedAt: number, expiresAt: number): string
+
+export const SISO_NOTES_PRO_LICENSE_AES_KEY: string | undefined | null
+
+export const SISO_NOTES_PRO_PUBLIC_KEY: string | undefined | null
 
 export interface StorageProviderCapabilities {
   put: boolean

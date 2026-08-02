@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { Transactional } from '@nestjs-cls/transactional';
-import { type ConnectedAccount, Prisma, type User } from '@prisma/client';
-import { omit } from 'lodash-es';
+import { Injectable } from "@nestjs/common";
+import { Transactional } from "@nestjs-cls/transactional";
+import { type ConnectedAccount, Prisma, type User } from "@prisma/client";
+import { omit } from "lodash-es";
 
 import {
   CannotDeleteAccountWithOwnedTeamWorkspace,
@@ -11,39 +11,39 @@ import {
   UserNotFound,
   WrongSignInCredentials,
   WrongSignInMethod,
-} from '../base';
-import { BaseModel } from './base';
+} from "../base";
+import { BaseModel } from "./base";
 import {
   publicUserSelect,
   type UserFeatureName,
   WorkspaceRole,
   workspaceUserSelect,
-} from './common';
-import type { Workspace } from './workspace';
+} from "./common";
+import type { Workspace } from "./workspace";
 
-type CreateUserInput = Omit<Prisma.UserCreateInput, 'name'> & { name?: string };
-type UpdateUserInput = Omit<Partial<Prisma.UserCreateInput>, 'id'>;
+type CreateUserInput = Omit<Prisma.UserCreateInput, "name"> & { name?: string };
+type UpdateUserInput = Omit<Partial<Prisma.UserCreateInput>, "id">;
 
 type CreateConnectedAccountInput = Omit<
   Prisma.ConnectedAccountUncheckedCreateInput,
-  'id'
+  "id"
 > & { accessToken: string };
 type UpdateConnectedAccountInput = Omit<
   Prisma.ConnectedAccountUncheckedUpdateInput,
-  'id'
+  "id"
 >;
 
 declare global {
   interface Events {
-    'user.preDelete': { id: string };
-    'user.created': User;
-    'user.updated': User;
-    'user.deleted': User & {
+    "user.preDelete": { id: string };
+    "user.created": User;
+    "user.updated": User;
+    "user.deleted": User & {
       // TODO(@forehalo): unlink foreign key constraint on [WorkspaceUserPermission] to delegate
       // dealing of owned workspaces of deleted users to workspace model
-      ownedWorkspaces: Workspace['id'][];
+      ownedWorkspaces: Workspace["id"][];
     };
-    'user.postCreated': User;
+    "user.postCreated": User;
   }
 }
 
@@ -61,8 +61,69 @@ export type { ConnectedAccount, User };
 
 @Injectable()
 export class UserModel extends BaseModel {
+  async upsertHostUser(input: {
+    id: string;
+    email: string;
+    name: string;
+    workspaceId: string;
+    avatarUrl?: string | null;
+  }) {
+    const byId = await this.db.user.findUnique({ where: { id: input.id } });
+    const existing =
+      byId ?? (await this.getUserByEmail(input.email, { withDisabled: true }));
+    const created = !existing;
+    let user: User;
+    if (existing && existing.id !== input.id) {
+      user = await this.db.user.update({
+        where: { id: existing.id },
+        data: {
+          email: input.email,
+          name: input.name,
+          avatarUrl: input.avatarUrl ?? null,
+          emailVerifiedAt: new Date(),
+          registered: true,
+          disabled: false,
+        },
+      });
+    } else {
+      user = await this.db.user.upsert({
+        where: { id: input.id },
+        create: {
+          id: input.id,
+          email: input.email,
+          name: input.name,
+          avatarUrl: input.avatarUrl ?? null,
+          emailVerifiedAt: new Date(),
+          registered: true,
+        },
+        update: {
+          email: input.email,
+          name: input.name,
+          avatarUrl: input.avatarUrl ?? null,
+          emailVerifiedAt: new Date(),
+          registered: true,
+          disabled: false,
+        },
+      });
+    }
+    if (created) {
+      await this.event.emitAsync("user.postCreated", user);
+      this.event.emit("user.created", user);
+    }
+
+    const roles = await this.models.workspaceUser.getUserActiveRoles(user.id);
+    if (!roles.length) {
+      await this.models.workspace.ensureHostWorkspace(
+        input.workspaceId,
+        user.id,
+      );
+    }
+
+    return user;
+  }
+
   async lockForAuthIssuance(id: string) {
-    const users = await this.db.$queryRaw<Array<Pick<User, 'id' | 'disabled'>>>`
+    const users = await this.db.$queryRaw<Array<Pick<User, "id" | "disabled">>>`
       SELECT id, disabled
       FROM users
       WHERE id = ${id}
@@ -73,7 +134,7 @@ export class UserModel extends BaseModel {
 
   constructor(
     private readonly crypto: CryptoHelper,
-    private readonly event: EventBus
+    private readonly event: EventBus,
   ) {
     super();
   }
@@ -99,7 +160,7 @@ export class UserModel extends BaseModel {
   }
 
   async getPublicUsersMap<T extends ItemWithUserId>(
-    items: T[]
+    items: T[],
   ): Promise<Map<string, PublicUser>> {
     const userIds = new Set<string>();
     for (const item of items) {
@@ -108,7 +169,7 @@ export class UserModel extends BaseModel {
       }
     }
     const users = await this.getPublicUsers(Array.from(userIds));
-    return new Map(users.map(user => [user.id, user]));
+    return new Map(users.map((user) => [user.id, user]));
   }
 
   async getWorkspaceUser(id: string): Promise<WorkspaceUser | null> {
@@ -127,13 +188,13 @@ export class UserModel extends BaseModel {
 
   async getUserByEmail(
     email: string,
-    filter: UserFilter = {}
+    filter: UserFilter = {},
   ): Promise<User | null> {
     const rows = await this.db.$queryRaw<User[]>`
       SELECT id, name, email, password, registered, email_verified as "emailVerifiedAt", avatar_url as "avatarUrl", registered, created_at as "createdAt", disabled
       FROM "users"
       WHERE lower("email") = lower(${email})
-      ${Prisma.raw(filter.withDisabled ? '' : 'AND disabled = false')}
+      ${Prisma.raw(filter.withDisabled ? "" : "AND disabled = false")}
     `;
 
     return rows[0] ?? null;
@@ -152,7 +213,7 @@ export class UserModel extends BaseModel {
 
     const passwordMatches = await this.crypto.verifyPassword(
       password,
-      user.password
+      user.password,
     );
 
     if (!passwordMatches) {
@@ -187,27 +248,27 @@ export class UserModel extends BaseModel {
     user = await this.db.user.create({
       data: {
         ...data,
-        name: data.name ?? data.email.split('@')[0],
+        name: data.name ?? data.email.split("@")[0],
       },
     });
 
     // delegate the responsibility of finish user creating setup to the corresponding models
-    await this.event.emitAsync('user.postCreated', user);
+    await this.event.emitAsync("user.postCreated", user);
 
     this.logger.debug(`User [${user.id}] created with email [${user.email}]`);
-    this.event.emit('user.created', user);
+    this.event.emit("user.created", user);
 
     return user;
   }
 
   async importUsers(inputs: CreateUserInput[]) {
     return await Promise.allSettled(
-      inputs.map(async input => {
+      inputs.map(async (input) => {
         return await this.create({
           ...input,
           registered: true,
         });
-      })
+      }),
     );
   }
 
@@ -232,7 +293,7 @@ export class UserModel extends BaseModel {
     });
 
     this.logger.debug(`User [${user.id}] updated`);
-    this.event.emitDetached('user.updated', user);
+    this.event.emitDetached("user.updated", user);
     return user;
   }
 
@@ -241,7 +302,7 @@ export class UserModel extends BaseModel {
    *
    * When user created by others invitation, we will leave it as unregistered.
    */
-  async fulfill(email: string, data: Omit<UpdateUserInput, 'email'> = {}) {
+  async fulfill(email: string, data: Omit<UpdateUserInput, "email"> = {}) {
     const user = await this.getUserByEmail(email, { withDisabled: true });
 
     if (!user) {
@@ -287,7 +348,7 @@ export class UserModel extends BaseModel {
 
     for (const ws of ownedWorkspaces) {
       const isTeamWorkspace = await this.models.workspace.isTeamWorkspace(
-        ws.workspaceId
+        ws.workspaceId,
       );
 
       if (isTeamWorkspace) {
@@ -295,7 +356,7 @@ export class UserModel extends BaseModel {
       }
     }
 
-    await this.event.emitAsync('user.preDelete', { id });
+    await this.event.emitAsync("user.preDelete", { id });
 
     await this.db.workspaceInvitation.deleteMany({
       where: { inviteeUserId: id },
@@ -303,9 +364,9 @@ export class UserModel extends BaseModel {
 
     const user = await this.db.user.delete({ where: { id } });
 
-    this.event.emit('user.deleted', {
+    this.event.emit("user.deleted", {
       ...user,
-      ownedWorkspaces: ownedWorkspaces.map(r => r.workspaceId),
+      ownedWorkspaces: ownedWorkspaces.map((r) => r.workspaceId),
     });
 
     return user;
@@ -318,12 +379,12 @@ export class UserModel extends BaseModel {
     let user = await this.delete(id);
     user = await this.db.user.create({
       data: {
-        ...omit(user, 'id'),
+        ...omit(user, "id"),
         disabled: true,
       },
     });
 
-    await this.event.emitAsync('user.postCreated', user);
+    await this.event.emitAsync("user.postCreated", user);
 
     return user;
   }
@@ -354,7 +415,7 @@ export class UserModel extends BaseModel {
         {
           email: {
             contains: keyword,
-            mode: 'insensitive',
+            mode: "insensitive",
           },
         },
         {
@@ -391,7 +452,7 @@ export class UserModel extends BaseModel {
     return this.db.user.findMany({
       where,
       orderBy: {
-        createdAt: 'asc',
+        createdAt: "asc",
       },
       skip: options.skip,
       take: options.take,
@@ -403,7 +464,7 @@ export class UserModel extends BaseModel {
       keyword?: string | null;
       features?: UserFeatureName[] | null;
       after?: Date;
-    } = {}
+    } = {},
   ) {
     const where = this.buildListWhere(options);
     return this.db.user.count({ where });
@@ -416,7 +477,7 @@ export class UserModel extends BaseModel {
       data,
     });
     this.logger.debug(
-      `Connected account ${account.provider}:${account.id} created`
+      `Connected account ${account.provider}:${account.id} created`,
     );
     return account;
   }

@@ -441,7 +441,7 @@ export class WorkspaceMcpProvider {
     }
 
     return {
-      name: `SISO Notes MCP Server for Workspace ${workspaceId}`,
+      name: `SisoNotes MCP Server for Workspace ${workspaceId}`,
       version: '1.0.1',
       tools,
     };

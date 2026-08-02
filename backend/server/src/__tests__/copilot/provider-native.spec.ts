@@ -331,7 +331,7 @@ function nativeImageRequest(
 
 function createProvider(profileMiddleware?: ProviderMiddlewareConfig) {
   const provider = new TestOpenAIProvider();
-  (provider as any).SISO NotesConfig = {
+  (provider as any).SisoNotesConfig = {
     copilot: {
       providers: {
         profiles: [
@@ -354,7 +354,7 @@ function createExecution(
   provider: TestOpenAIProvider
 ): CopilotProviderExecution {
   const registry = buildProviderRegistry(
-    (provider as any).SISO NotesConfig.copilot.providers
+    (provider as any).SisoNotesConfig.copilot.providers
   );
   const profile = registry.profiles.get('openai-main');
   if (!profile) {
@@ -948,7 +948,7 @@ test('NativeExecutionEngine should not fail stream when BYOK usage recording fai
 
 test('CopilotProviderFactory should return no prepared routes when native prepare returns null', async t => {
   const provider = new DriverOnlyProvider();
-  (provider as any).SISO NotesConfig = { copilot: { providers: { openai: {} } } };
+  (provider as any).SisoNotesConfig = { copilot: { providers: { openai: {} } } };
   (provider as any).toolExecutorHost = {
     createNativeAdapter: () => {
       throw new Error('native adapter should not be used');
@@ -1042,7 +1042,7 @@ test('CopilotProviderFactory should return no prepared routes when native prepar
 
 test('driver-only provider should use base native driver templates', async t => {
   const provider = new DriverOnlyProvider();
-  (provider as any).SISO NotesConfig = { copilot: { providers: { openai: {} } } };
+  (provider as any).SisoNotesConfig = { copilot: { providers: { openai: {} } } };
   (provider as any).toolExecutorHost = {
     createNativeAdapter: () => ({
       text: async () => 'driver text',
@@ -1153,7 +1153,7 @@ test('driver-only provider should use base native driver templates', async t => 
 
 test('driver-only provider should require explicit structured response contracts', async t => {
   const provider = new DriverOnlyProvider();
-  (provider as any).SISO NotesConfig = { copilot: { providers: { openai: {} } } };
+  (provider as any).SisoNotesConfig = { copilot: { providers: { openai: {} } } };
   (provider as any).toolExecutorHost = {
     createNativeAdapter: () => {
       throw new Error(
@@ -1773,7 +1773,7 @@ test('OpenAI oldApiStyle should resolve chat backend variants from native regist
 
 test('OpenAI image driver should host-materialize remote edit inputs', async t => {
   const provider = new OpenAIProvider();
-  (provider as any).SISO NotesConfig = {
+  (provider as any).SisoNotesConfig = {
     copilot: {
       providers: {
         profiles: [],

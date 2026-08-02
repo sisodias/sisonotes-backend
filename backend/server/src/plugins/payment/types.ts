@@ -113,7 +113,7 @@ export interface LookupKey {
 
 export interface KnownStripeInvoice {
   /**
-   * User in SISO Notes system.
+   * User in SisoNotes system.
    */
   userId?: string;
 
@@ -137,7 +137,7 @@ export interface KnownStripeInvoice {
 
 export interface KnownStripeSubscription {
   /**
-   * User in SISO Notes system.
+   * User in SisoNotes system.
    */
   userId?: string;
 
@@ -181,48 +181,48 @@ export const DEFAULT_PRICES = new Map([
   [
     `${SubscriptionPlan.Pro}_${SubscriptionRecurring.Monthly}`,
     {
-      product: 'SISO Notes',
+      product: 'SisoNotes',
       price: 799,
     },
   ],
   [
     `${SubscriptionPlan.Pro}_${SubscriptionRecurring.Yearly}`,
     {
-      product: 'SISO Notes',
+      product: 'SisoNotes',
       price: 8100,
     },
   ],
   [
     `${SubscriptionPlan.Pro}_${SubscriptionRecurring.Lifetime}`,
     {
-      product: 'SISO Notes Believer',
+      product: 'SisoNotes Believer',
       price: 49900,
     },
   ],
   // ai
   [
     `${SubscriptionPlan.AI}_${SubscriptionRecurring.Yearly}`,
-    { product: 'SISO Notes AI', price: 10680 },
+    { product: 'SisoNotes AI', price: 10680 },
   ],
 
   // team
   [
     `${SubscriptionPlan.Team}_${SubscriptionRecurring.Monthly}`,
-    { product: 'SISO Notes Team(per seat)', price: 1200 },
+    { product: 'SisoNotes Team(per seat)', price: 1200 },
   ],
   [
     `${SubscriptionPlan.Team}_${SubscriptionRecurring.Yearly}`,
-    { product: 'SISO Notes Team(per seat)', price: 12000 },
+    { product: 'SisoNotes Team(per seat)', price: 12000 },
   ],
 
   // selfhost team
   [
     `${SubscriptionPlan.SelfHostedTeam}_${SubscriptionRecurring.Monthly}`,
-    { product: 'SISO Notes Self-hosted Team(per seat)', price: 1200 },
+    { product: 'SisoNotes Self-hosted Team(per seat)', price: 1200 },
   ],
   [
     `${SubscriptionPlan.SelfHostedTeam}_${SubscriptionRecurring.Yearly}`,
-    { product: 'SISO Notes Self-hosted Team(per seat)', price: 12000 },
+    { product: 'SisoNotes Self-hosted Team(per seat)', price: 12000 },
   ],
 ]);
 

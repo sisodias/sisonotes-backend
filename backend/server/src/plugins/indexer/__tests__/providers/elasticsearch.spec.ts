@@ -130,7 +130,7 @@ _test.before(async () => {
         workspace_id: 'workspaceId1',
         doc_id: 'docId2-sisonotes',
         block_id: 'blockId8',
-        content: 'SISO Notes 是一个基于云端的笔记应用',
+        content: 'SisoNotes 是一个基于云端的笔记应用',
         flavour: 'flavour8',
         ref_doc_id: 'docId1',
         ref: [
@@ -892,7 +892,7 @@ test('should search doc table query title match cjk work', async t => {
       {
         workspace_id: workspaceId,
         doc_id: 'doc-0',
-        title: 'SISO Notes 是一个基于云端的笔记应用',
+        title: 'SisoNotes 是一个基于云端的笔记应用',
       },
     ],
     {
@@ -961,7 +961,7 @@ test('should search doc table query title.autocomplete work', async t => {
       {
         workspace_id: workspaceId,
         doc_id: docId,
-        title: 'SISO Notes 是一个基于云端的笔记应用',
+        title: 'SisoNotes 是一个基于云端的笔记应用',
       },
     ],
     {

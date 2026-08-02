@@ -112,10 +112,10 @@ export abstract class CalendarProvider {
   protected readonly logger = new Logger(this.constructor.name);
 
   @Inject() private readonly factory!: CalendarProviderFactory;
-  @Inject() private readonly SISO NotesConfig!: Config;
+  @Inject() private readonly SisoNotesConfig!: Config;
 
   get config() {
-    return (this.SISO NotesConfig.calendar as Record<string, any>)[this.provider];
+    return (this.SisoNotesConfig.calendar as Record<string, any>)[this.provider];
   }
 
   get configured() {

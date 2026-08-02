@@ -9,7 +9,7 @@ export default function ChangeEmailNotification(
 ) {
   return (
     <Template>
-      <Title>Verify your current email for SISO Notes</Title>
+      <Title>Verify your current email for SisoNotes</Title>
       <Content>
         <P>
           As per your request, we have changed your email. Please make sure

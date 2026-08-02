@@ -1,8 +1,8 @@
 import { LoggerService, Provider } from '@nestjs/common';
 import { createLogger, format, transports } from 'winston';
 
-import { SISO NotesLogger as LoggerProvide } from '../../../base/logger';
-import { SISO NotesLogger } from './logger';
+import { SisoNotesLogger as LoggerProvide } from '../../../base/logger';
+import { SisoNotesLogger } from './logger';
 
 const moreMetadata = format(info => {
   info.requestId = LoggerProvide.getRequestId();
@@ -17,6 +17,6 @@ export const LoggerProvider: Provider<LoggerService> = {
       transports: [new transports.Console()],
       format: format.combine(moreMetadata(), format.json()),
     });
-    return new SISO NotesLogger(instance);
+    return new SisoNotesLogger(instance);
   },
 };

@@ -44,10 +44,10 @@ export abstract class OAuthProvider {
 
   protected readonly logger = new Logger(this.constructor.name);
   @Inject() private readonly factory!: OAuthProviderFactory;
-  @Inject() private readonly SISO NotesConfig!: Config;
+  @Inject() private readonly SisoNotesConfig!: Config;
 
   get config() {
-    return this.SISO NotesConfig.oauth.providers[this.provider];
+    return this.SisoNotesConfig.oauth.providers[this.provider];
   }
 
   get configured() {

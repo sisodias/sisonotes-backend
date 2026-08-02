@@ -324,7 +324,7 @@ test('should validate markdown list', t => {
 const actions = [
   {
     name: 'Should chat with histories',
-    promptName: ['Chat With SISO Notes AI'],
+    promptName: ['Chat With SisoNotes AI'],
     messages: promptMessages(
       userPrompt(
         `
@@ -376,8 +376,8 @@ The term **“CRDT”** was first introduced by Marc Shapiro, Nuno Preguiça, Ca
   },
   {
     name: 'Should not have citation',
-    promptName: ['Chat With SISO Notes AI'],
-    messages: singleUserPromptMessages('what is SISO Notes AI?', {
+    promptName: ['Chat With SisoNotes AI'],
+    messages: singleUserPromptMessages('what is SisoNotes AI?', {
       params: {
         files: [
           {
@@ -407,7 +407,7 @@ The term **“CRDT”** was first introduced by Marc Shapiro, Nuno Preguiça, Ca
   },
   {
     name: 'Should have citation',
-    promptName: ['Chat With SISO Notes AI'],
+    promptName: ['Chat With SisoNotes AI'],
     messages: singleUserPromptMessages('what is ssot', {
       params: {
         docs: [
@@ -428,8 +428,8 @@ The term **“CRDT”** was first introduced by Marc Shapiro, Nuno Preguiça, Ca
   },
   {
     name: 'stream objects',
-    promptName: ['Chat With SISO Notes AI'],
-    messages: singleUserPromptMessages('what is SISO Notes AI'),
+    promptName: ['Chat With SisoNotes AI'],
+    messages: singleUserPromptMessages('what is SisoNotes AI'),
     verifier: (t: ExecutionContext<Tester>, result: string) => {
       t.truthy(checkStreamObjects(result), 'should be valid stream objects');
     },
@@ -437,16 +437,16 @@ The term **“CRDT”** was first introduced by Marc Shapiro, Nuno Preguiça, Ca
   },
   {
     name: 'Gemini native text',
-    promptName: ['Chat With SISO Notes AI'],
+    promptName: ['Chat With SisoNotes AI'],
     messages: singleUserPromptMessages(
-      'In one short sentence, explain what SISO Notes AI is and mention SISO Notes by name.'
+      'In one short sentence, explain what SisoNotes AI is and mention SisoNotes by name.'
     ),
     config: { model: 'gemini-3.6-flash' },
     verifier: (t: ExecutionContext<Tester>, result: string) => {
       assertNotWrappedInCodeBlock(t, result);
       t.assert(
         result.toLowerCase().includes('sisonotes'),
-        'should mention SISO Notes'
+        'should mention SisoNotes'
       );
     },
     prefer: CopilotProviderType.Gemini,
@@ -454,9 +454,9 @@ The term **“CRDT”** was first introduced by Marc Shapiro, Nuno Preguiça, Ca
   },
   {
     name: 'Gemini native stream objects',
-    promptName: ['Chat With SISO Notes AI'],
+    promptName: ['Chat With SisoNotes AI'],
     messages: singleUserPromptMessages(
-      'Respond with one short sentence about SISO Notes AI and mention SISO Notes by name.'
+      'Respond with one short sentence about SisoNotes AI and mention SisoNotes by name.'
     ),
     config: { model: 'gemini-3.6-flash' },
     verifier: (t: ExecutionContext<Tester>, result: string) => {
@@ -464,7 +464,7 @@ The term **“CRDT”** was first introduced by Marc Shapiro, Nuno Preguiça, Ca
       const assembledText = getStreamObjectText(result);
       t.assert(
         assembledText.toLowerCase().includes('sisonotes'),
-        'should mention SISO Notes'
+        'should mention SisoNotes'
       );
     },
     prefer: CopilotProviderType.Gemini,
@@ -512,7 +512,7 @@ The term **“CRDT”** was first introduced by Marc Shapiro, Nuno Preguiça, Ca
       'Make it longer',
       'Make it shorter',
       'Section Edit',
-      'Chat With SISO Notes AI',
+      'Chat With SisoNotes AI',
     ],
     messages: singleUserPromptMessages(TestAssets.SSOT),
     verifier: (t: ExecutionContext<Tester>, result: string) => {
@@ -529,7 +529,7 @@ The term **“CRDT”** was first introduced by Marc Shapiro, Nuno Preguiça, Ca
   },
   {
     promptName: ['Continue writing'],
-    messages: singleUserPromptMessages(TestAssets.SISO Notes),
+    messages: singleUserPromptMessages(TestAssets.SisoNotes),
     verifier: (t: ExecutionContext<Tester>, result: string) => {
       assertNotWrappedInCodeBlock(t, result);
       t.assert(result.length > 0, 'should not be empty');
@@ -538,7 +538,7 @@ The term **“CRDT”** was first introduced by Marc Shapiro, Nuno Preguiça, Ca
   },
   {
     promptName: ['Brainstorm ideas about this', 'Brainstorm mindmap'],
-    messages: singleUserPromptMessages(TestAssets.SISO Notes),
+    messages: singleUserPromptMessages(TestAssets.SisoNotes),
     verifier: (t: ExecutionContext<Tester>, result: string) => {
       assertNotWrappedInCodeBlock(t, result);
       t.assert(checkMDList(result), 'should be a markdown list');

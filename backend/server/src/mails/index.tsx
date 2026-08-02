@@ -62,14 +62,14 @@ function make<T extends ComponentType<any>>(
 
 export const Renderers = {
   //#region Test
-  TestMail: make(TestMail, 'Test Email from SISO Notes'),
+  TestMail: make(TestMail, 'Test Email from SisoNotes'),
   //#endregion
 
   //#region User
-  SignIn: make(SignIn, 'Sign in to SISO Notes'),
-  SignUp: make(SignUp, 'Your SISO Notes account is waiting for you!'),
-  SetPassword: make(SetPassword, 'Set your SISO Notes password'),
-  ChangePassword: make(ChangePassword, 'Modify your SISO Notes password'),
+  SignIn: make(SignIn, 'Sign in to SisoNotes'),
+  SignUp: make(SignUp, 'Your SisoNotes account is waiting for you!'),
+  SetPassword: make(SetPassword, 'Set your SisoNotes password'),
+  ChangePassword: make(ChangePassword, 'Modify your SisoNotes password'),
   VerifyEmail: make(VerifyEmail, 'Verify your email address'),
   ChangeEmail: make(ChangeEmail, 'Change your email address'),
   VerifyChangeEmail: make(VerifyChangeEmail, 'Verify your new email address'),
@@ -79,7 +79,7 @@ export const Renderers = {
   //#region Workspace
   MemberInvitation: make(
     Invitation,
-    'You were invited to join a workspace on SISO Notes'
+    'You were invited to join a workspace on SisoNotes'
   ),
   MemberAccepted: make(
     InvitationAccepted,
@@ -110,8 +110,8 @@ export const Renderers = {
   //#endregion
 
   //#region Doc
-  Mention: make(Mention, 'You were mentioned in SISO Notes'),
-  Comment: make(Comment, 'New comment in SISO Notes'),
+  Mention: make(Mention, 'You were mentioned in SisoNotes'),
+  Comment: make(Comment, 'New comment in SisoNotes'),
   CommentMention: make(CommentMention, 'You were mentioned in a comment'),
   //#endregion
 
@@ -148,7 +148,7 @@ export const Renderers = {
   //#region License
   TeamLicense: make(
     TeamLicense,
-    'Your SISO Notes Self-Hosted Team Workspace license is ready'
+    'Your SisoNotes Self-Hosted Team Workspace license is ready'
   ),
   //#endregion
 } as const;

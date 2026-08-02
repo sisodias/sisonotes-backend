@@ -22,7 +22,7 @@ import type {
 } from '../types';
 
 /**
- * Yjs Adapter for SISO Notes ORM
+ * Yjs Adapter for SisoNotes ORM
  *
  * Structure:
  *

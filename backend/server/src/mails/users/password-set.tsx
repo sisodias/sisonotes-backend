@@ -7,13 +7,13 @@ export type SetPasswordProps = {
 export default function SetPassword(props: SetPasswordProps) {
   return (
     <Template>
-      <Title>Set your SISO Notes password</Title>
+      <Title>Set your SisoNotes password</Title>
       <Content>
         <P>
           Click the button below to set your password. The magic link will
           expire in <Bold>30 minutes</Bold>.
         </P>
-        <Button href={props.url}>Sign in to SISO Notes</Button>
+        <Button href={props.url}>Sign in to SisoNotes</Button>
       </Content>
     </Template>
   );

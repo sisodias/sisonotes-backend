@@ -24,12 +24,12 @@ declare global {
 
 defineModuleConfig('server', {
   name: {
-    desc: 'A recognizable name for the server. Will be shown when connected with SISO Notes Desktop.',
+    desc: 'A recognizable name for the server. Will be shown when connected with SisoNotes Desktop.',
     default: undefined,
     shape: z.string().optional(),
   },
   externalUrl: {
-    desc: `Base url of SISO Notes server, used for generating external urls.
+    desc: `Base url of SisoNotes server, used for generating external urls.
 Default to be \`[server.protocol]://[server.host][:server.port]\` if not specified.
     `,
     default: '',

@@ -2087,7 +2087,7 @@ test('should index doc work', async t => {
           type: SearchQueryType.match,
           field: 'content',
           match:
-            'For developers or installations guides, please go to SISO Notes Doc',
+            'For developers or installations guides, please go to SisoNotes Doc',
         },
       ],
     },

@@ -45,8 +45,8 @@ let owner: MockedUser;
 
 e2e.before(async () => {
   process.env.DEPLOYMENT_TYPE = 'selfhosted';
-  process.env.SISO Notes_PRO_PUBLIC_KEY = testPublicKey;
-  process.env.SISO Notes_PRO_LICENSE_AES_KEY = testTestLicenseAESKey;
+  process.env.SisoNotes_PRO_PUBLIC_KEY = testPublicKey;
+  process.env.SisoNotes_PRO_LICENSE_AES_KEY = testTestLicenseAESKey;
   refreshEnv();
 
   app = await createApp();

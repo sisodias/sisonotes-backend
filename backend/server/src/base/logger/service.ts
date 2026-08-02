@@ -6,10 +6,10 @@ import { UserFriendlyError } from '../error';
 // DO NOT use this Logger directly
 // Use it via this way: `private readonly logger = new Logger(MyService.name)`
 @Injectable()
-export class SISO NotesLogger extends ConsoleLogger {
+export class SisoNotesLogger extends ConsoleLogger {
   override stringifyMessage(message: unknown, logLevel: LogLevel) {
     const messageString = super.stringifyMessage(message, logLevel);
-    const requestId = SISO NotesLogger.getRequestId();
+    const requestId = SisoNotesLogger.getRequestId();
     if (!requestId) {
       return messageString;
     }
@@ -53,6 +53,6 @@ export class SISO NotesLogger extends ConsoleLogger {
     stackOrError?: Error | string | unknown,
     context?: string
   ) {
-    super.error(message, SISO NotesLogger.formatStack(stackOrError), context);
+    super.error(message, SisoNotesLogger.formatStack(stackOrError), context);
   }
 }
