@@ -4,6 +4,7 @@ import { Prisma, type Workspace as WorkspaceRecord } from "@prisma/client";
 
 import { EventBus } from "../base";
 import { BaseModel } from "./base";
+import { createHostWorkspaceUpdate } from "./host-workspace";
 
 type RawWorkspaceSummary = {
   id: string;
@@ -127,7 +128,27 @@ export class WorkspaceModel extends BaseModel {
       include: { accessPolicy: true },
     });
     await this.models.workspaceUser.setOwner(workspace.id, userId);
+    if (!(await this.models.doc.exists(workspace.id, workspace.id))) {
+      await this.models.doc.upsert({
+        spaceId: workspace.id,
+        docId: workspace.id,
+        blob: createHostWorkspaceUpdate(workspace.id),
+        timestamp: Date.now(),
+        editorId: userId,
+      });
+    }
     return this.withAccessPolicy(workspace);
+  }
+
+  async ensureHostWorkspaceInitialized(workspaceId: string, userId: string) {
+    if (await this.models.doc.exists(workspaceId, workspaceId)) return;
+    await this.models.doc.upsert({
+      spaceId: workspaceId,
+      docId: workspaceId,
+      blob: createHostWorkspaceUpdate(workspaceId),
+      timestamp: Date.now(),
+      editorId: userId,
+    });
   }
 
   /**

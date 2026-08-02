@@ -112,8 +112,16 @@ export class UserModel extends BaseModel {
     }
 
     const roles = await this.models.workspaceUser.getUserActiveRoles(user.id);
-    if (!roles.length) {
+    const hostWorkspaceRole = roles.find(
+      (role) => role.workspaceId === input.workspaceId,
+    );
+    if (!hostWorkspaceRole) {
       await this.models.workspace.ensureHostWorkspace(
+        input.workspaceId,
+        user.id,
+      );
+    } else {
+      await this.models.workspace.ensureHostWorkspaceInitialized(
         input.workspaceId,
         user.id,
       );
