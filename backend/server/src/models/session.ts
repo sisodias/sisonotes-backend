@@ -94,21 +94,25 @@ export class SessionModel extends BaseModel {
     ttl = this.config.auth.session.ttl,
     signInClientVersion?: string,
   ) {
-    await this.db.session.upsert({
-      where: { id: sessionId },
-      update: {},
-      create: { id: sessionId },
+    await this.db.session.createMany({
+      data: [{ id: sessionId }],
+      skipDuplicates: true,
     });
     const expiresAt = new Date(Date.now() + ttl * 1000);
-    return await this.db.userSession.upsert({
+    await this.db.userSession.createMany({
+      data: [
+        {
+          sessionId,
+          userId,
+          expiresAt,
+          ...(signInClientVersion ? { signInClientVersion } : {}),
+        },
+      ],
+      skipDuplicates: true,
+    });
+    return await this.db.userSession.update({
       where: { sessionId_userId: { sessionId, userId } },
-      update: {
-        expiresAt,
-        ...(signInClientVersion ? { signInClientVersion } : {}),
-      },
-      create: {
-        sessionId,
-        userId,
+      data: {
         expiresAt,
         ...(signInClientVersion ? { signInClientVersion } : {}),
       },
